@@ -13,20 +13,12 @@
 #include "Globals.h"
 #include "MathFunctions.h"
 #include "SpriteBase.h"
-#include "Physical.h"
-
-int WINDOW_HEIGHT = 600;
-int WINDOW_WIDTH = 800;
-
-std::wstring ExePath() {
-    TCHAR buffer[MAX_PATH] = { 0 };
-    GetModuleFileName(NULL, buffer, MAX_PATH);
-    std::wstring::size_type pos = std::wstring(buffer).find_last_of(L"\\/");
-    return std::wstring(buffer).substr(0, pos);
-}
+#include "Ents.h"
 
 int main(int argc, char* argv[])
 {
+    WINDOW_HEIGHT = 600;
+    WINDOW_WIDTH = 800;
     TTF_Init();
     app.MainFont = TTF_OpenFont("C:/Windows/Fonts/arial.ttf", 25);
     
@@ -34,34 +26,38 @@ int main(int argc, char* argv[])
     {
         printf("error initializing SDL: %s\n", SDL_GetError());
     }
-    app.Window = SDL_CreateWindow("F-Bird", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    app.Window = SDL_CreateWindow("2D Game Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     Uint32 render_flags = SDL_RENDERER_ACCELERATED;
     app.Renderer = SDL_CreateRenderer(app.Window, -1, render_flags);
+    
 
-    std::string Atex = "IMG_1314.png";
-    Sprite* dest = SpriteManager.makeSprite(Atex, (WINDOW_WIDTH - 6) / 2, (WINDOW_HEIGHT - 6) / 2, 6, 6);
-    Sprite* back = SpriteManager.makePhysical(300, 300); //Atex, -60, 0, WINDOW_WIDTH + 100, WINDOW_HEIGHT + 100
-    Sprite* pipe = SpriteManager.makeSprite(Atex, WINDOW_WIDTH + 150, GRandom(180, WINDOW_HEIGHT - 100), 150, 4000);
-    Sprite* coin = SpriteManager.makeSprite("Grenade_proj_red.png", 300, 300, 15, 15);
-    Sprite* bad = SpriteManager.makeSprite("Grenade_proj_red.png", 10, 10, 17, 17);
-    Sprite* bird = SpriteManager.makeSprite(Atex, 0, 0, 10, 10);
-    SDL_Color color = { 255, 255, 255 };
-    Sprite* text1 = SpriteManager.makeText("Blbabab3", app.MainFont, color, 0, 0);
-    Sprite* text2 = SpriteManager.makeSprT("Blbabab3", app.MainFont, color, 50, 50);
-    Sprite* text3 = SpriteManager.makeText("Blbabab3", app.MainFont, color, 75, 160);
+    globals.ViewMode = V_EDITOR;
+    globals.Mouseover = M_GAME;
 
-    std::cout << "my directory is " << app.datapath.append(back->imagename) << "\n";
-    Testing();
+    Sprite* phys1 = ents.create(E_Physical);
+    Physical* phys1c = static_cast<Physical*>(phys1);
+    phys1c->setPos(vec2d(300, 300));
+
+    Sprite* ves1 = ents.create(E_Vessel);
+    Physical* ves1v = static_cast<Physical*>(ves1);
+    ves1v->setPos(vec2d(390, 366));
+
+    phys1c->setParent(ves1v);
+
+    EditorEnt* editorbrush = static_cast<EditorEnt*>(ents.create(E_EditorEnt));
+    editorbrush->setParent(ves1v);
+
+    ents.EditBrush = editorbrush;
 
     while (!globals.GameQuit)
     {
+        SDL_RenderClear(app.Renderer);
         doInput();
-        SpriteManager.update();
-        SpriteManager.draw(app.Renderer);
+        ents.update();
+        ents.draw(app.Renderer);
         SDL_RenderPresent(app.Renderer);
         SDL_Delay(17);
     }
-    SpriteManager.empty();
 
     SDL_DestroyRenderer(app.Renderer);
     SDL_DestroyWindow(app.Window);

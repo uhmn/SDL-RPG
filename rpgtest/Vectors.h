@@ -30,4 +30,5 @@ struct vec2d {
 	static double Distance(vec2d vec1, vec2d vec2);
 	static void SetRectToVector(SDL_Rect* rect, vec2d vec);
 	void SetToRect(SDL_Rect rect);
+	static bool Collision(vec2d mins, vec2d maxs, vec2d check);
 };

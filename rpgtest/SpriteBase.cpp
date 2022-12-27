@@ -9,7 +9,6 @@
 #include "Globals.h"
 #include "MathFunctionsHeader.h"
 
-#include "Physical.h"
 #include "SpriteBase.h"
 #include "iostream"
 
@@ -41,7 +40,7 @@
 	}
 	void Sprite::update()
 	{
-	
+		
 	}
 	void Sprite::deconstructSelf()
 	{
@@ -112,43 +111,42 @@
 			spritecount -= 1;
 		}
 	}
-	Sprite* spritelist::makeSprite(std::string imagepath, int x, int y, int w, int h)
-	{
-		Sprite* newsprite = new Sprite(x, y, w, h, imagepath);
-		allsprites.push_back(newsprite);
-		spritecount += 1;
-		//newsprite->start();
-		return newsprite;
-	}
+	//Sprite* spritelist::makeSprite(std::string imagepath, int x, int y, int w, int h)
+	//{
+	//	Sprite* newsprite = new Sprite(x, y, w, h, imagepath);
+	//	allsprites.push_back(newsprite);
+	//	spritecount += 1;
+	//	//newsprite->start();
+	//	return newsprite;
+	//}
 	Sprite* spritelist::makeText(std::string text, TTF_Font* font, SDL_Color color, int x, int y)
 	{
 		Sprite* newsprite = new Sprite(x, y, 0, 0, text);
 		newsprite->makeText(font, color);
 		allsprites.push_back(newsprite);
 		spritecount += 1;
-		//newsprite->start();
 		return newsprite;
 	}
-	Sprite* spritelist::makeSprT(std::string text, TTF_Font* font, SDL_Color color, int x, int y)
-	{
-		Sprite* newsprite = new SprT(x, y, 0, 0, text, color);
-		newsprite->makeText(font, color);
-		allsprites.push_back(newsprite);
-		spritecount += 1;
-		//newsprite->start();
-		return newsprite;
-	}
-	Sprite* spritelist::makePhysical(int x, int y)
-	{
-		Sprite* newsprite = new Physical();
-		newsprite->rect.x = x;
-		newsprite->rect.y = y;
-		allsprites.push_back(newsprite);
-		spritecount += 1;
-		//newsprite->start();
-		//static_cast<Physical*>(newsprite)->start();
-		return newsprite;
-	}
+	//Sprite* spritelist::makeSprT(std::string text, TTF_Font* font, SDL_Color color, int x, int y)
+	//{
+	//	Sprite* newsprite = new SprT(x, y, 0, 0, text, color);
+	//	newsprite->makeText(font, color);
+	//	allsprites.push_back(newsprite);
+	//	spritecount += 1;
+	//	//newsprite->start();
+	//	return newsprite;
+	//}
+	//Sprite* spritelist::makePhysical(int x, int y)
+	//{
+	//	Sprite* newsprite = new Physical();
+	//	newsprite->rect.x = x;
+	//	newsprite->rect.y = y;
+	//	allsprites.push_back(newsprite);
+	//	spritecount += 1;
+	//	//newsprite->start();
+	//	static_cast<Physical*>(newsprite)->start();
+	//	return newsprite;
+	//}
 	void spritelist::add(Sprite* sprite)
 	{
 		allsprites.push_back(sprite);
@@ -163,7 +161,7 @@
 	}
 	void spritelist::draw(SDL_Renderer* renderer)
 	{
-		SDL_RenderClear(renderer);
+		//SDL_RenderClear(renderer);
 		for (Sprite* v : allsprites)
 		{
 			Sprite spr = *v;
@@ -179,5 +177,3 @@
 			spritecount = 0;
 		}
 	}
-
-spritelist SpriteManager;

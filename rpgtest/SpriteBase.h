@@ -1,5 +1,7 @@
 #pragma once
 #include <SDL_ttf.h>
+#include <string>
+#include <vector>
 
 class Sprite {
 public:
@@ -29,9 +31,8 @@ public:
 };
 
 class spritelist {
-private:
-	std::vector<Sprite*> allsprites;
 public:
+	std::vector<Sprite*> allsprites;
 	int spritecount;
 	spritelist();
 	void remove(Sprite* spr);
@@ -44,5 +45,3 @@ public:
 	void draw(SDL_Renderer* renderer);
 	void empty();
 };
-
-extern spritelist SpriteManager;

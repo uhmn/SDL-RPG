@@ -112,8 +112,8 @@ vec2d vec2d::Div(vec2d vec1, double newvar) {
 }
 vec2d vec2d::Round( vec2d oldvec ) {
 	vec2d newvec;
-	newvec.x = round(newvec.x);
-	newvec.y = round(newvec.y);
+	newvec.x = round(oldvec.x);
+	newvec.y = round(oldvec.y);
 	return newvec;
 }
 
@@ -135,4 +135,14 @@ void vec2d::SetRectToVector(SDL_Rect* rect, vec2d vec) {
 void vec2d::SetToRect(SDL_Rect rect) {
 	x = rect.x;
 	y = rect.y;
+}
+
+bool vec2d::Collision(vec2d mins, vec2d maxs, vec2d check) {
+	if (check.x > mins.x &&
+		check.y > mins.y &&
+		check.x < maxs.x &&
+		check.y < maxs.y)
+		 { return true; }
+
+	else { return false; }
 }
