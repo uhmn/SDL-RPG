@@ -5,6 +5,7 @@
 #include <SDL_ttf.h>
 #include "MathFunctionsHeader.h"
 #include "Globals.h"
+#include "Ents.h"
 
 std::string TileSprites[13][3] = {  {"strawberry.png", "2", "0"},
                                     {"wall.png", "2", "1"},
@@ -15,10 +16,10 @@ std::string TileSprites[13][3] = {  {"strawberry.png", "2", "0"},
                                     {"girderwallUD.png", "2", "1"},
                                     {"girderwallLRUD.png", "2", "1"},
                                     {"deletebrush.png", "3", "0"},
-                                    {"thrusterL.png", "Thruster", "1"},
-                                    {"thrusterR.png", "Thruster", "1"},
-                                    {"thrusterU.png", "Thruster", "1"},
-                                    {"thrusterD.png", "Thruster", "1"},
+                                    {"thrusterL.png", "2", "1"},
+                                    {"thrusterR.png", "2", "1"},
+                                    {"thrusterU.png", "2", "1"},
+                                    {"thrusterD.png", "2", "1"},
 };
 
 int WINDOW_HEIGHT;
@@ -29,21 +30,55 @@ Globals globals;
 
 void doKeyHold()
 {
+    Creature* CreatureControlLinkPhysical = static_cast<Creature*>(ents.CreatureControlLink);
+    int keysPressed = 0;
     if (app.up == 1)
     {
-        //c[0].yl = c[0].yl + 10;
+        keysPressed++;
     }
     if (app.down == 1)
     {
-        //c[0].yl = c[0].yl - 10;
+        keysPressed++;
     }
     if (app.left == 1)
     {
-        // c[0].xl = c[0].xl + 10;
+        keysPressed++;
     }
     if (app.right == 1)
     {
-        //c[0].xl = c[0].xl - 10;
+        keysPressed++;
+    }
+    if (globals.ViewMode == V_EDITOR) {
+        if (app.up == 1)
+        {
+            globals.CamY = globals.CamY - (16 / (keysPressed / (keysPressed / 1.5)));
+        }
+        if (app.down == 1)
+        {
+            globals.CamY = globals.CamY + (16 / (keysPressed / (keysPressed / 1.5)));
+        }
+        if (app.left == 1)
+        {
+            globals.CamX = globals.CamX - (16 / (keysPressed / (keysPressed / 1.5)));
+        }
+        if (app.right == 1)
+        {
+            globals.CamX = globals.CamX + (16 / (keysPressed / (keysPressed / 1.5)));
+        }
+    }
+    else if (globals.ViewMode == V_1ST && isValid(CreatureControlLinkPhysical)) {
+        
+        if (CreatureControlLinkPhysical->moveCooldown > 0) {
+            float movecooldown = static_cast<float>(CreatureControlLinkPhysical->moveCooldown);
+            float lastmovecooldown = static_cast<float>(CreatureControlLinkPhysical->lastMoveCooldown);
+            double slider = movecooldown / lastmovecooldown;
+            globals.CamX = slider * (CreatureControlLinkPhysical->lastPosition.x-WINDOW_WIDTH/2)+(1-slider)*(CreatureControlLinkPhysical->position.x-WINDOW_WIDTH/2);
+            globals.CamY = slider * (CreatureControlLinkPhysical->lastPosition.y-WINDOW_HEIGHT/2)+(1-slider)*(CreatureControlLinkPhysical->position.y-WINDOW_HEIGHT/2);
+        }
+        else {
+            globals.CamX = (CreatureControlLinkPhysical->position.x) - WINDOW_WIDTH / 2;
+            globals.CamY = (CreatureControlLinkPhysical->position.y) - WINDOW_HEIGHT / 2;
+        }
     }
     if (app.w == 1)
     {
@@ -88,6 +123,19 @@ void doKeyUp(SDL_KeyboardEvent* event)
         {
             app.s = 0;
         }
+        if (event->keysym.scancode == SDL_SCANCODE_A)
+        {
+            app.a = 0;
+        }
+
+        if (event->keysym.scancode == SDL_SCANCODE_D)
+        {
+            app.d = 0;
+        }
+        if (event->keysym.scancode == SDL_SCANCODE_RETURN)
+        {
+            app.enter = 0;
+        }
     }
 }
 
@@ -124,14 +172,33 @@ void doKeyDown(SDL_KeyboardEvent* event)
         {
             app.s = 1;
         }
+        if (event->keysym.scancode == SDL_SCANCODE_A)
+        {
+            app.a = 1;
+        }
+        if (event->keysym.scancode == SDL_SCANCODE_D)
+        {
+            app.d = 1;
+        }
+        if (event->keysym.scancode == SDL_SCANCODE_RETURN)
+        {
+            if (globals.ViewMode == V_1ST) {
+                globals.ViewMode = V_EDITOR;
+            }
+            else if (globals.ViewMode == V_EDITOR) {
+                globals.ViewMode = V_1ST;
+            }
+            app.enter = 1;
+        }
     }
 }
 
 void doInput(void)
 {
-    SDL_Event event;
-    SDL_GetMouseState(&app.MouseX, &app.MouseY);
+    doKeyHold();
 
+    SDL_Event event;
+    
     app.mousepressed = 0;
     while (SDL_PollEvent(&event))
     {

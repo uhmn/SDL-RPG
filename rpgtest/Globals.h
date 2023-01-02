@@ -1,4 +1,6 @@
 #pragma once
+#include "Vectors.h"
+#include "E_MenuItem.h"
 void doInput(void);
 
 struct App {
@@ -8,8 +10,11 @@ struct App {
     unsigned int right;
     unsigned int w;
     unsigned int s;
+    unsigned int a;
+    unsigned int d;
     unsigned int mouseheld;
     unsigned int mousepressed;
+    unsigned int enter;
     SDL_Window* Window;
     SDL_Renderer* Renderer;
     SDL_Surface* Surface;
@@ -24,8 +29,11 @@ struct Globals {
     bool GameQuit;
     unsigned int ViewMode;
     unsigned int Mouseover;
-    int CamX;
-    int CamY;
+    double CamX;
+    double CamY;
+    vec2d windowSize;
+    double gravity;
+    MenuItem* ActiveMenuItem;
 };
 
 extern int WINDOW_HEIGHT;

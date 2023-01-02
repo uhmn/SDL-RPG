@@ -11,6 +11,8 @@ public:
 	void setTileType(unsigned int offset);
 	unsigned int getTileType();
 	void initialize();
+	std::string getData();
+	void enterData(std::vector<std::string> data);
 };
 
 class DeleteBrush : public Tile {

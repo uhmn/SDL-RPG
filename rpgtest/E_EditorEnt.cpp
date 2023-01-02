@@ -9,21 +9,21 @@ void EditorEnt::initialize() {
 }
 void EditorEnt::onTick() {
 	if (globals.ViewMode == V_EDITOR && globals.Mouseover == M_GAME) {
-		//make self partially visible
+		setAlpha(128);
 		posOffset = MousePosToGridPos(parent->position.x, parent->position.y);
-		//position = posOffset;
 		if (app.mousepressed == true) {
 			int entlayer = stoi(TileSprites[ents.EditorTileOffset][2]);
 			SpritePair previous = ents.findBlocksAt(position, static_cast<Vessel*>(parent));
-			if (previous.take(entlayer) != nullptr) {
+			if (isValid(previous.take(entlayer))) {
 				static_cast<Physical*>(previous.take(entlayer))->remove();
 			}
 			if (entlayer == 0) {
-				if (previous.second != nullptr) {
+				if (isValid(previous.second)) {
 					static_cast<Physical*>(previous.second)->remove();
 				}
 			}
-			Tile* placed = static_cast<Tile*>(ents.create(ents.EditorEntType));
+			Sprite* splaced = ents.create(ents.EditorEntType);
+			Tile* placed = static_cast<Tile*>(splaced);
 			placed->setTileType(ents.EditorTileOffset);
 			placed->setSprite(ents.EditorType);
 			placed->setPos(position);
@@ -31,6 +31,6 @@ void EditorEnt::onTick() {
 		}
 	}
 	else {
-		//make image invisible
+		setAlpha(0);
 	}
 }

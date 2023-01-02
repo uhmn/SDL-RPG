@@ -5,6 +5,7 @@ struct vec2d {
 	double y;
 
 	vec2d(double x0, double y1);
+	vec2d(SDL_Rect recta);
 	vec2d();
 	void Add(vec2d newvar);
 	void Sub(vec2d newvar);
@@ -31,4 +32,6 @@ struct vec2d {
 	static void SetRectToVector(SDL_Rect* rect, vec2d vec);
 	void SetToRect(SDL_Rect rect);
 	static bool Collision(vec2d mins, vec2d maxs, vec2d check);
+	static bool SquareCollision(vec2d box, vec2d check, int boxwidth);
+	static double Largest(vec2d lis);
 };

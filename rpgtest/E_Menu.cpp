@@ -30,24 +30,20 @@ void Menu::setSprite(std::string image1) {
 }
 void Menu::update() {
 	if (viewmode == globals.ViewMode || viewmode == V_ALL) {
-		//make visible
+		setAlpha(255);
 	}
 	else {
-		//make invisble
+		setAlpha(0);
 	}
 	onTick();
 }
 void Menu::remove() {
 	ents.removeUI(this);
+	deconstructSelf();
 }
-void Menu::onTick() {
+void Menu::onTick() {}
 
-}
-void Menu::initialize() {
-	ents.menulayer1.add(this);
-}
+void Menu::initialize() { ents.menulayer1.add(this); }
 
 
-void MenuB::initialize() {
-	ents.menulayer2.add(this);
-}
+void MenuB::initialize() { ents.menulayer2.add(this); }

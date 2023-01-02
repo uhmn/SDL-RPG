@@ -8,7 +8,6 @@
 Vessel::Vessel() : Physical() {}
 
 void Vessel::initialize() {
-	ents.floorlayer.add(this);
 	ents.allvessels.add(this);
 	std::vector<Physical*> blankthing;
 	blankthing.resize(2, nullptr);
@@ -24,4 +23,4 @@ void Vessel::onTick() {
 	posOffset = vec2d::Add(posOffset, velocity);
 }
 
-//void Vessel::enterData() {} //do nothing or else it will break
+void Vessel::enterData() {} //do nothing or else it will break

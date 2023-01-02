@@ -11,6 +11,7 @@
 
 #include "SpriteBase.h"
 #include "iostream"
+#include "Ents.h"
 
 	void Sprite::ResetRect() { SDL_Rect rect; }
 
@@ -30,6 +31,8 @@
 		rect.y = y;
 		rect.w = w;
 		rect.h = h;
+		removing = false;
+		angle = 0;
 	}
 	Sprite::~Sprite()
 	{
@@ -46,6 +49,8 @@
 	{
 		SDL_DestroyTexture(tex);
 		delete this;
+		//removing = true;
+		//SpriteGarbage.add(this);
 	}
 	void Sprite::makeText(TTF_Font* font, SDL_Color color)
 	{
@@ -59,6 +64,26 @@
 		tex = SDL_CreateTextureFromSurface(app.Renderer, surface);
 		SDL_QueryTexture(tex, NULL, NULL, &rect.w, &rect.h);
 		SDL_FreeSurface(surface);
+	}
+	void Sprite::setAlpha(Uint8 alpha)
+	{
+		SDL_SetTextureAlphaMod(tex, alpha);
+	}
+	void Sprite::enterData(std::vector<std::string> data)
+	{
+
+	}
+	std::string Sprite::getData()
+	{
+		std::string sussy = "what";
+		return sussy;
+	}
+	int Sprite::getClassType()
+	{
+		return classtype;
+	}
+	void Sprite::initialize()
+	{
 	}
 
 	SprT::SprT(int x, int y, int w, int h, std::string sprfile, SDL_Color color) : Sprite(x, y, w, h, sprfile) {
@@ -88,6 +113,7 @@
 
 
 
+
 	spritelist::spritelist()
 	{
 		spritecount = 0;
@@ -106,19 +132,10 @@
 		}
 		if (return_i != -1 && spr != NULL)
 		{
-			spr->deconstructSelf();
 			allsprites.erase(allsprites.begin() + return_i);
 			spritecount -= 1;
 		}
 	}
-	//Sprite* spritelist::makeSprite(std::string imagepath, int x, int y, int w, int h)
-	//{
-	//	Sprite* newsprite = new Sprite(x, y, w, h, imagepath);
-	//	allsprites.push_back(newsprite);
-	//	spritecount += 1;
-	//	//newsprite->start();
-	//	return newsprite;
-	//}
 	Sprite* spritelist::makeText(std::string text, TTF_Font* font, SDL_Color color, int x, int y)
 	{
 		Sprite* newsprite = new Sprite(x, y, 0, 0, text);
@@ -127,26 +144,6 @@
 		spritecount += 1;
 		return newsprite;
 	}
-	//Sprite* spritelist::makeSprT(std::string text, TTF_Font* font, SDL_Color color, int x, int y)
-	//{
-	//	Sprite* newsprite = new SprT(x, y, 0, 0, text, color);
-	//	newsprite->makeText(font, color);
-	//	allsprites.push_back(newsprite);
-	//	spritecount += 1;
-	//	//newsprite->start();
-	//	return newsprite;
-	//}
-	//Sprite* spritelist::makePhysical(int x, int y)
-	//{
-	//	Sprite* newsprite = new Physical();
-	//	newsprite->rect.x = x;
-	//	newsprite->rect.y = y;
-	//	allsprites.push_back(newsprite);
-	//	spritecount += 1;
-	//	//newsprite->start();
-	//	static_cast<Physical*>(newsprite)->start();
-	//	return newsprite;
-	//}
 	void spritelist::add(Sprite* sprite)
 	{
 		allsprites.push_back(sprite);
@@ -154,26 +151,48 @@
 	}
 	void spritelist::update()
 	{
-		for (Sprite* v : allsprites)
-		{
-			v->update();
+		//std::vector<Sprite*> vectorcopy = allsprites;
+		int lastspritecount = spritecount;
+		int i = 0;
+		while (spritecount > i) {
+			Sprite* sprite = allsprites[i];
+			if (sprite != nullptr) { sprite->update(); }
+			i++;
+			i += spritecount - lastspritecount;
+			lastspritecount = spritecount;
 		}
+		//for (Sprite* v : vectorcopy)
+		//{
+		//
+		//	if (v != nullptr) { v->update(); }
+		//}
 	}
 	void spritelist::draw(SDL_Renderer* renderer)
 	{
-		//SDL_RenderClear(renderer);
 		for (Sprite* v : allsprites)
 		{
 			Sprite spr = *v;
-			SDL_RenderCopy(renderer, spr.tex, NULL, &spr.rect);
+			//if (spr.removing == true) {
+			//	//remove(v); idk
+			//	delete v;
+			//}
+			//else {
+				spr.rect.x -= spr.rect.w*0.5;
+				spr.rect.y -= spr.rect.h*0.5;
+				SDL_RenderCopyEx(renderer, spr.tex, NULL, &spr.rect, spr.angle, NULL, SDL_FLIP_NONE);
+			//}
 		}
 
 	}
-	void spritelist::empty()
+	void spritelist::empty(bool destroy)
 	{
-		for (Sprite* v : allsprites)
-		{
-			v->deconstructSelf();
-			spritecount = 0;
+		//int i = 0;
+		while (allsprites.size() > 0) {
+			Sprite* v = allsprites.back();
+			if (/*v->removing == 0 || v->removing == 1*/destroy) { SDL_DestroyTexture(v->tex); delete v; ents.allsprites.remove(v); }
+			allsprites.pop_back();
 		}
+		spritecount = 0;
 	}
+
+//spritelist SpriteGarbage;

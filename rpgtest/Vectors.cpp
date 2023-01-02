@@ -6,6 +6,10 @@ vec2d::vec2d(double x0, double y0) {
 	x = x0;
 	y = y0;
 }
+vec2d::vec2d(SDL_Rect recta) {
+	x = recta.x;
+	y = recta.y;
+}
 vec2d::vec2d() {
 	x = 0;
 	y = 0;
@@ -145,4 +149,20 @@ bool vec2d::Collision(vec2d mins, vec2d maxs, vec2d check) {
 		 { return true; }
 
 	else { return false; }
+}
+
+bool vec2d::SquareCollision(vec2d box, vec2d check, int boxwidth) {
+	if (vec2d::Collision(vec2d::Sub(box, boxwidth/2), vec2d::Add(box, boxwidth/2), check))
+	{
+		return true;
+	}
+
+	else { return false; }
+}
+
+double vec2d::Largest(vec2d lis) {
+	double t1 = fabs(lis.x);
+	double t2 = fabs(lis.y);
+	if (t1 > t2) { return t1; }
+	else { return t2; }
 }

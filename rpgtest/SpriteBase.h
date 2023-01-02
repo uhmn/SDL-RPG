@@ -10,6 +10,8 @@ public:
 	std::string imagename;
 	bool isText;
 	unsigned int classtype;
+	bool removing;
+	int angle;
 
 	void ResetRect();
 	void updateSurface(std::string sprfile);
@@ -20,6 +22,11 @@ public:
 	virtual void deconstructSelf();
 	void makeText(TTF_Font* font, SDL_Color color);
 	void updateText(TTF_Font* font, std::string text, SDL_Color color);
+	void setAlpha(Uint8 alpha);
+	virtual void enterData(std::vector<std::string> data);
+	virtual std::string getData();
+	int getClassType();
+	virtual void initialize();
 };
 
 class SprT : public Sprite {
@@ -36,12 +43,11 @@ public:
 	int spritecount;
 	spritelist();
 	void remove(Sprite* spr);
-	Sprite* makeSprite(std::string imagepath, int x = 0, int y = 0, int w = 1, int h = 1);
 	Sprite* makeText(std::string text, TTF_Font* font, SDL_Color color, int x = 0, int y = 0);
-	Sprite* makeSprT(std::string text, TTF_Font* font, SDL_Color color, int x = 0, int y = 0);
-	Sprite* makePhysical(int x = 0, int y = 0);
 	void add(Sprite* sprite);
 	void update();
 	void draw(SDL_Renderer* renderer);
-	void empty();
+	void empty(bool destroy = false);
 };
+
+//extern spritelist SpriteGarbage;

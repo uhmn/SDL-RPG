@@ -11,5 +11,5 @@ public:
 	Vessel();
 	void initialize();
 	void onTick();
-	//void enterData(); //do nothing or else it will break
+	void enterData(); //do nothing or else it will break
 };

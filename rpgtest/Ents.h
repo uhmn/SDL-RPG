@@ -5,6 +5,12 @@
 #include "E_Menu.h"
 #include "E_EditorEnt.h"
 #include "E_EditorIcon.h"
+#include "E_SaveLoadButton.h"
+#include "E_Creature.h"
+#include "E_MenuItem.h"
+#include "E_FloorItem.h"
+#include "E_MousePointer.h"
+#include "E_Gun.h"
 
 struct SpritePair
 {
@@ -17,13 +23,7 @@ struct SpritePair
 class Ents
 {
 private:
-	spritelist allsprites;
 	std::vector<spritelist*> AllParticleLayers;
-	Sprite* CreatureControlLink;
-	Sprite* MenuHoldingObject;
-	vec2d MenuPositions[2];
-	Sprite* HotbarSprites[2];
-	Sprite* MenuContents[2];
 	unsigned int entCount;
 public:
 	spritelist floorlayer;
@@ -39,15 +39,22 @@ public:
 	spritelist allvessels;
 	spritelist allbuttons;
 	spritelist allphysicals;
+	spritelist allsprites;
 
 	std::string EditorType;
 	int EditorTileOffset;
 	int EditorEntType;
 	EditorEnt* EditBrush;
+	Sprite* CreatureControlLink;
+	Sprite* MenuHoldingObject;
+	Menu* HotbarSprites[2];
+	MenuItem* MenuContents[2];
+	vec2d MenuPositions[2];
 
 	Ents();
 	//void getEntityTypes();
 	Sprite* create(unsigned int etype);
+	Sprite* create(std::string etype);
 	void update();
 	void draw(SDL_Renderer* renderer);
 	int findCellIndexOfPos(vec2d pos, vec2d vesselPos, unsigned int cellSize);
@@ -58,15 +65,19 @@ public:
 	void findMouseover();
 	Sprite* SIDToEnt(int SID);
 	void incrementEntCounter();
-	//SaveData* getAllTable();
+	std::vector<std::string> getAllTable();
 	void deleteAll();
 	void remove(Sprite* ent);
 	void removeUI(Sprite* ent);
+	int getEntCount();
 };
 
 vec2d MousePosToGridPos(double parentX, double parentY);
 vec2d MousePosToVesselPos(double parentX, double parentY);
 vec2d MousePosToPosition(Physical* parent);
+bool isValid(Sprite* sprite);
+std::string ETypeMapReverse(int input);
+std::string data_number_node(std::string datapeice);
 
 #define E_Physical 0
 #define E_Vessel 1
@@ -76,6 +87,15 @@ vec2d MousePosToPosition(Physical* parent);
 #define E_MenuB 5
 #define E_EditorEnt 6
 #define E_EditorIcon 7
+#define E_SaveLoadButton 8
+#define E_SaveButton 9
+#define E_LoadButton 10
+#define E_Creature 11
+#define E_MenuItem 12
+#define E_FloorItem 13
+#define E_MousePointer 14
+#define E_Gun 15
 
+//extern std::map<std::string, int> StringIntEtype;
 extern Ents ents;
 extern Sprite* (*entityCreation[])();

@@ -34,6 +34,19 @@ void Tile::initialize() {
 	tileoffset = 0;
 }
 
+std::string Tile::getData()
+{
+	std::string ans = Physical::getData();
+	ans = ans + data_number_node(std::to_string(tileoffset));
+	return ans;
+}
+
+void Tile::enterData(std::vector<std::string> data)
+{
+	Physical::enterData(data);
+	setTileType(stoi(data[7]));
+}
+
 void DeleteBrush::onTick() {
 	Sprite* ent = ents.findBlocksAt(position, static_cast<Vessel*>(parent)).second;
 	if (ent != nullptr) { static_cast<Physical*>(ent)->remove(); }

@@ -2,6 +2,7 @@
 #include "E_Menu.h"
 
 class EditorIcon : public Menu {
+public:
 	int tileoffset;
 	int enttype;
 
